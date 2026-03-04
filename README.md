@@ -1,82 +1,149 @@
-# ZenTrades AI - Document Processing Pipelines
+# 🤖 ZenTrades AI — Automated Call Processing Pipelines
 
-This repository contains automated workflows built in [n8n](https://n8n.io/) to process onboarding and demo data for various trade businesses (HVAC, Plumbing, Pest Control, etc.). The pipelines leverage the **Groq API** to analyze text files and generate structured JSON outputs, including account memos and agent specifications.
+> *"So you've got 10 call transcripts, a Groq API key, and a dream. Let's build something."*
 
-## 📁 Directory Structure & Storage
+This repo automates the boring part of onboarding trade businesses (HVAC, plumbing, pest control, and friends). Drop in a call transcript, and these n8n pipelines will spit out a structured account memo and a fully configured AI agent spec — no copy-pasting, no crying.
 
-For the pipelines to read and write correctly, your local file system must match this structure. All files processed by the "Read/Write Files from Disk" nodes look for these specific folders:
+Built by **Aryaman** for the ZenTrades AI assignment. It works. Please don't touch the JavaScript nodes.
+
+---
+
+## 📂 Folder Structure
+
+Before you run anything, your folder layout needs to look *exactly* like this. The pipelines are picky. They will not ask nicely if a file is missing.
 
 ```text
 ZenTrades AI/
 ├── inputs/
 │   ├── demo/
 │   │   ├── demo_001_arctic_hvac.txt
+│   │   ├── demo_002_riverstone_plumbing.txt
 │   │   └── ... (up to 005)
 │   └── onboarding/
 │       ├── onboarding_001_arctic_hvac.txt
+│       ├── onboarding_002_riverstone_plumbing.txt
 │       └── ... (up to 005)
-├── outputs/
-│   ├── accounts/
-│   │   ├── ACC-001_memo_v1.json
-│   │   ├── ACC-001_memo_v2.json
-│   │   └── ... 
-│   └── agent_spec/
-│       ├── 001_arctic_hvac_agent_spec_v1.json
-│       └── ...
-🏷️ Naming Conventions
-To ensure the JavaScript code nodes properly parse and map the files, please adhere to the following naming conventions:
+└── outputs/
+    ├── accounts/
+    │   ├── ACC-001_memo_v1.json
+    │   ├── ACC-001_memo_v2.json
+    │   └── ...
+    └── agent_spec/
+        ├── 001_arctic_hvac_agent_spec_v1.json
+        └── ...
+```
 
-Input Files: [type]_[id]_[company_name].txt
+> 💡 The `outputs/` folder gets created automatically when the pipelines run. You only need to set up `inputs/` manually.
 
-Example: demo_001_arctic_hvac.txt or onboarding_003_fireguard.txt
+---
 
-Account Output Files: ACC-[id]_memo_[version].json
+## 🏷️ File Naming — This Actually Matters
 
-Example: ACC-001_memo_v1.json
+The JavaScript nodes parse filenames to figure out which account they're working with. Deviate from this format and things will break silently. You've been warned.
 
-Agent Spec Output Files: [id]_[company_name]_agent_spec_[version].json
+| File Type | Format | Example |
+|---|---|---|
+| Demo transcript | `demo_[id]_[company].txt` | `demo_001_arctic_hvac.txt` |
+| Onboarding transcript | `onboarding_[id]_[company].txt` | `onboarding_003_fireguard.txt` |
+| Account memo output | `ACC-[id]_memo_[version].json` | `ACC-001_memo_v1.json` |
+| Agent spec output | `[id]_[company]_agent_spec_[version].json` | `001_arctic_hvac_agent_spec_v1.json` |
 
-Example: 001_arctic_hvac_agent_spec_v1.json
+---
 
-⚙️ Prerequisites & Setup
-To reproduce and run this project, you will need:
+## ⚙️ What You Need Before Starting
 
-n8n instance: Running locally (via Docker/npm) or on n8n cloud. Note: Since these use "Read/Write Files from Disk" nodes, a local Docker setup with mounted volumes for /inputs and /outputs is recommended.
+Two things. Just two.
 
-Groq API Key: You need an active API key from Groq to handle the LLM HTTP Requests.
+**1. A running n8n instance**
 
-Import Workflows: Import the JSON workflow files (if exported from n8n) into your n8n workspace.
+Locally via Docker is the way to go here, because the pipelines read and write actual files from disk. Cloud n8n won't have access to your local folders (obviously). If you haven't set it up yet, [the Docker setup guide is here](https://docs.n8n.io/hosting/installation/docker/).
 
-Configuring the Groq API Nodes
-In both pipelines, the HTTP Request nodes are configured to hit https://api.groq.com/openai/v1/chat/completions. You must configure the authentication in these nodes by adding your Groq API key to the header (e.g., Authorization: Bearer YOUR_API_KEY).
+Make sure you mount your `ZenTrades AI` folder as a volume so n8n can see it inside the container:
 
-🚀 How to Run the Pipelines
-The project consists of two distinct workflows.
+```yaml
+volumes:
+  - "C:/Users/ARYAMAN/Downloads/ZenTrades AI:/data/zentrades"
+```
 
-Pipeline 1: Two-Stage Sequential Processing (Top Workflow)
-Purpose: This pipeline reads a specific file, processes it through the Groq LLM, saves an intermediate output (like a v1 memo), runs a second Groq LLM prompt on that new data, and saves a final output (like a v2 memo or agent spec).
+Inside n8n, your paths will then start with `/data/zentrades/inputs/...` and `/data/zentrades/outputs/...`
 
-Steps to Run:
+**2. A Groq API Key**
 
-Open the workflow in n8n.
+Sign up at [console.groq.com](https://console.groq.com) — it's free. Grab your API key.
 
-Ensure your target input file is correctly placed in the inputs/ directory.
+In n8n, find the HTTP Request nodes in both workflows and add your key as a header:
 
-Click the Test Workflow or run the first node (Read/Write Files from Disk) manually.
+```
+Authorization: Bearer YOUR_GROQ_API_KEY
+```
 
-The pipeline will sequentially execute the JavaScript formatting, hit the Groq API twice, and write two files to the outputs/ directory (Disk1 and Disk2 write nodes).
+That's it. No paid plans, no credit card, no tears.
 
-Pipeline 2: Batch Processing (Bottom Workflow)
-Purpose: This pipeline is designed for bulk processing. It reads a batch of 5 input files simultaneously, extracts the text, formats it via JavaScript, sends 5 parallel requests to the Groq API, and writes the 5 resulting JSON files to the disk.
+---
 
-Steps to Run:
+## 🚀 Running the Pipelines
 
-Ensure all 5 company files (001 through 005) are located in their respective inputs/ folders.
+There are two workflows. They do different things. Run them in order.
 
-Open the workflow in n8n.
+---
 
-Click the 'Execute workflow' button at the bottom of the screen (or the trigger node on the far left).
+### Pipeline 1 — Two-Stage Sequential Processing
 
-The pipeline will read all 5 items, process them through the HTTP Request2 node using Groq, and use the final Read/Write Files from Disk5 node to save all 5 outputs into the outputs/ folder dynamically based on their file names.
+**What it does:** Takes one input file, runs it through Groq *twice* (first to extract a v1 memo, then to build an agent spec from that memo), and saves both outputs to disk.
 
-Maintained by Aryaman for the ZenTrades AI Assignment.
+Think of it as: `raw transcript → structured memo → polished agent config`
+
+**How to run it:**
+
+1. Open the workflow in n8n
+2. Make sure your target `.txt` file is sitting in the right `inputs/` subfolder
+3. Click the first **Read/Write Files from Disk** node and hit **"Execute node"**
+4. Watch the green checkmarks cascade rightward like dominoes
+5. Check your `outputs/` folder — you should see two new files written by the `Disk1` and `Disk2` write nodes
+
+> ⚠️ If a node turns red, click it and read the error. 90% of the time it's either a wrong file path or a missing API key.
+
+---
+
+### Pipeline 2 — Batch Processing (The Fun One)
+
+**What it does:** Reads all 5 input files at once, fires 5 parallel requests to Groq, and writes all 5 output JSONs in one go. It's the same work as Pipeline 1, just done in bulk and significantly more satisfying to watch.
+
+**How to run it:**
+
+1. Make sure **all 5 files** (`001` through `005`) are in their respective `inputs/` folder — batch mode will look for all of them
+2. Open the workflow in n8n
+3. Click **"Execute Workflow"** at the bottom of the screen (or trigger the leftmost node)
+4. Groq gets 5 requests, processes them, and the final **Read/Write Files from Disk5** node writes all 5 output JSONs into `outputs/` — file names are generated dynamically from the input file names, so no manual renaming needed
+
+> 💡 If you're running both pipelines back to back, Pipeline 1 first, then Pipeline 2. The batch pipeline can depend on some outputs that Pipeline 1 generates.
+
+---
+
+## 🗂️ What Gets Generated
+
+After both pipelines run successfully on all 10 files, your `outputs/` folder will contain:
+
+- **10 account memo JSONs** — 5 at `v1` (from demo calls), 5 at `v2` (updated after onboarding)
+- **10 agent spec JSONs** — ready to paste into Retell or review manually
+- One less headache
+
+---
+
+## 🐛 Common Issues
+
+**"File not found" errors**
+Check your volume mount in `docker-compose.yml`. The path inside the container (`/data/zentrades/`) must match exactly what's in the n8n file path nodes. One wrong slash ruins everything.
+
+**Groq returns a 429 error**
+You're hitting the rate limit. Add a **Wait** node (set to 2 seconds) between the read and HTTP Request nodes in Pipeline 2.
+
+**Outputs folder is empty after running**
+The write nodes might have the wrong output path configured. Click the final `Read/Write Files from Disk` node in each pipeline and double-check the file path points to `/data/zentrades/outputs/`.
+
+**JSON parsing fails in the Code node**
+Groq occasionally wraps its response in markdown code fences (` ```json ... ``` `). The Code nodes already strip these — but if you're customizing prompts, make sure your system prompt says *"respond with raw JSON only, no markdown formatting."*
+
+---
+
+*Maintained by Aryaman · ZenTrades AI Assignment · Built with n8n + Groq + a concerning amount of coffee*
