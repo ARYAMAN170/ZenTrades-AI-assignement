@@ -1,0 +1,74 @@
+{
+  "account_id": "ACC-001",
+  "version": "v1",
+  "company_name": "Arctic Comfort HVAC Solutions",
+  "business_hours": {
+    "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    "weekday_hours": { "start": "07:00", "end": "18:00" },
+    "saturday_hours": { "start": "08:00", "end": "14:00" },
+    "sunday": "closed",
+    "timezone": "America/Denver"
+  },
+  "office_address": {
+    "street": "4820 Northfield Boulevard",
+    "city": "Denver",
+    "state": "CO",
+    "zip": "80216"
+  },
+  "services_supported": [
+    "HVAC installation",
+    "HVAC repair",
+    "HVAC maintenance",
+    "maintenance contracts"
+  ],
+  "emergency_definition": [
+    "No heat when outdoor temperature is below 30°F",
+    "No AC when outdoor temperature is above 95°F",
+    "Furnace actively leaking carbon monoxide",
+    "Commercial refrigeration failure"
+  ],
+  "emergency_routing_rules": {
+    "primary": {
+      "name": "Mike Salazar",
+      "role": "On-call technician (rotating)",
+      "phone": "720-555-0143",
+      "timeout_seconds": 90
+    },
+    "secondary": {
+      "name": "Dave Kowalski",
+      "role": "Secondary on-call technician",
+      "phone": "720-555-0187"
+    },
+    "fallback": {
+      "action": "Inform caller someone will call back within 15 minutes",
+      "owner_alert": {
+        "name": "Tom Hargrove",
+        "phone": "720-555-0201",
+        "method": "SMS"
+      }
+    }
+  },
+  "non_emergency_routing_rules": {
+    "after_hours": "Inform caller of business hours. Offer callback next business day. Collect name and phone number.",
+    "transfer": false
+  },
+  "call_transfer_rules": {
+    "business_hours_transfer_to": "720-555-0100",
+    "rings_before_voicemail": 4,
+    "voicemail_instruction": "Send to voicemail. Office checks voicemail regularly."
+  },
+  "integration_constraints": [
+    "Never create, modify, or access jobs in ServiceTitan — all ServiceTitan tasks are handled by office staff only"
+  ],
+  "forbidden_phrases": [
+    "Do not quote prices",
+    "Do not promise same-day service"
+  ],
+  "after_hours_flow_summary": "Greet caller. Confirm purpose. If emergency trigger identified, collect name, phone, address. Attempt transfer to primary on-call (90s timeout), then secondary. If both fail, inform caller of 15-minute callback and alert owner via SMS. If non-emergency, give business hours and collect name/number for next-day callback.",
+  "office_hours_flow_summary": "Greet caller. Transfer to main office line 720-555-0100. If no answer in 4 rings, send to voicemail.",
+  "greeting": "Thank you for calling Arctic Comfort HVAC, how can I help you today?",
+  "questions_or_unknowns": [
+    "On-call schedule is rotating weekly — integration for schedule updates not defined"
+  ],
+  "notes": "Owner mentioned winter season (Nov–Feb) may add extra on-call techs. Owner will notify Clara team when schedule changes. No automated phone tree / IVR preferred."
+}

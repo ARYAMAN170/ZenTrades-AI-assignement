@@ -1,0 +1,189 @@
+{
+  "dataset_info": {
+    "total_accounts": 5,
+    "pipeline_a_inputs": "5 demo call transcripts",
+    "pipeline_b_inputs": "5 onboarding call transcripts",
+    "generated": "2024-12-15"
+  },
+  "accounts": [
+    {
+      "account_id": "ACC-002",
+      "v1": {
+        "company_name": "Riverstone Plumbing & Drain",
+        "business_hours": {
+          "days": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+          "hours": {"start": "08:00", "end": "17:00"},
+          "saturday": "closed",
+          "sunday": "closed",
+          "timezone": "America/New_York"
+        },
+        "office_address": "317 Peachtree Industrial Blvd, Suite 12, Buford, GA 30518",
+        "services_supported": ["drain cleaning","pipe repair","water heater installation","emergency leak response"],
+        "emergency_definition": [
+          "Active water leak causing property damage",
+          "Sewage backup in the home",
+          "Burst pipes",
+          "No hot water for elderly or disabled customer"
+        ],
+        "emergency_routing_rules": {
+          "primary": {"role": "On-call technician", "phone": "678-555-0234", "timeout_seconds": 120},
+          "fallback": {"action": "Collect name, callback number, address. Inform 20-minute callback. Alert owner Gary Tran at 678-555-0289 via SMS (do not give number to caller)."}
+        },
+        "non_emergency_routing_rules": "Provide business hours. Collect name and phone number. Next business day callback.",
+        "call_transfer_rules": {"business_hours_transfer_to": "770-555-0190", "rings_before_voicemail": 3},
+        "integration_constraints": ["Never create or modify jobs in Jobber"],
+        "forbidden_phrases": ["Do not quote prices","Do not provide ETAs","Do not say we are the best in Atlanta"],
+        "greeting": "Thank you for calling Riverstone Plumbing, your Atlanta plumbing experts. How can we help you today?",
+        "notes": "Spanish-speaking callers: say 'Un momento, voy a conectarte con alguien que puede ayudarte' and log call with note 'Spanish-speaking caller — requires bilingual follow-up.'"
+      },
+      "v2_changes": {
+        "business_hours_saturday": {"added": true, "hours": {"start": "09:00", "end": "13:00"}, "reason": "New Saturday hours starting this quarter"},
+        "emergency_routing_rules.primary.phone": {"old": "678-555-0234", "new": "678-555-0251", "reason": "Emergency line number updated"},
+        "emergency_definition": {"added": "Gas smell near water heater or gas appliance — advise caller to evacuate immediately, call gas utility, then route to tech", "reason": "Safety protocol for new water heater install service"},
+        "services_supported": {"added": ["tankless water heater installation", "hydro jetting"], "reason": "New service offerings this quarter"},
+        "greeting": {"old": "...your Atlanta plumbing experts...", "new": "...your trusted Atlanta plumbing team...", "reason": "Legal review — reduced risk vs 'experts' superlative"}
+      }
+    },
+    {
+      "account_id": "ACC-003",
+      "v1": {
+        "company_name": "FireGuard Protection Services",
+        "business_hours": {
+          "days": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+          "hours": {"start": "07:00", "end": "17:00"},
+          "timezone": "America/Phoenix"
+        },
+        "office_address": "9240 West Roosevelt Street, Tolleson, AZ 85353",
+        "services_supported": ["fire sprinkler installation","fire sprinkler inspection","fire sprinkler emergency repair","fire alarm testing"],
+        "emergency_definition": [
+          "Active sprinkler discharge (commercial property flooding)",
+          "Fire alarm system fully offline",
+          "AHJ-tagged building with imminent compliance deadline"
+        ],
+        "emergency_routing_rules": {
+          "primary": {"name": "Emergency dispatch", "phone": "602-555-0177", "timeout_seconds": 120},
+          "secondary": {"name": "Rick Navarro", "role": "On-call supervisor", "phone": "602-555-0144"},
+          "fallback": {"action": "Inform caller of 30-minute callback. Log call."}
+        },
+        "non_emergency_routing_rules": "Collect name, phone, company name, nature of call. Inform next-business-day contact.",
+        "call_transfer_rules": {"business_hours_transfer_to": "623-555-0100", "rings_before_voicemail": 3},
+        "integration_constraints": ["Never create, update, or close jobs in ServiceTrade"],
+        "forbidden_phrases": [
+          "Never say 'guaranteed' or 'guarantee' in any context",
+          "Never mention competitor names",
+          "Never say a system 'should be fine'",
+          "Never comment on permit status — take info and route to Pam"
+        ],
+        "special_routing": "Callers identifying as 'property manager' flagged as high priority",
+        "greeting": "Thank you for calling FireGuard Protection Services. For fire or sprinkler emergencies, stay on the line. For all other inquiries, how can we help you today?"
+      },
+      "v2_changes": {
+        "emergency_routing_rules.secondary.phone": {"old": "602-555-0144", "new": "602-555-0166", "reason": "Rick Navarro's number changed"},
+        "emergency_definition": {"added": "AHJ violation notice received — route directly to Rick Navarro, skip dispatch", "reason": "New escalation path requested at onboarding"},
+        "services_supported": {"added": ["kitchen hood suppression system installation and service"], "reason": "New service offering"},
+        "business_hours": {"friday_extended_to": "18:00", "effective": "2025-01-01", "reason": "Extended Friday hours starting new year. Mon-Thu 07:00-17:00, Fri 07:00-18:00."},
+        "forbidden_phrases": {"enforced": "guarantee/guaranteed — HARD constraint, must never appear in any agent output"},
+        "greeting": {"new": "Thank you for calling FireGuard Protection Services, your commercial fire protection specialists. For fire or sprinkler emergencies, please stay on the line. For all other inquiries, how may I direct your call?", "reason": "Professional tone update for commercial client base"}
+      }
+    },
+    {
+      "account_id": "ACC-004",
+      "v1": {
+        "company_name": "Volt Masters Electrical Contractors",
+        "business_hours": {
+          "days": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+          "hours": {"start": "08:00", "end": "17:00"},
+          "timezone": "America/New_York"
+        },
+        "office_address": "5504 Monroe Road, Charlotte, NC 28212",
+        "services_supported": ["panel upgrades","EV charger installation","generator hookup","electrical repairs"],
+        "emergency_definition": [
+          "Power outage affecting medical equipment in home",
+          "Exposed live wiring",
+          "Burning smell from electrical panel",
+          "Complete power loss to a business"
+        ],
+        "emergency_routing_rules": {
+          "primary": {"name": "Linda Park", "role": "Owner", "phone": "704-555-0167", "timeout_seconds": 120},
+          "secondary": {"name": "Aaron Brooks", "role": "Lead technician", "phone": "704-555-0182"},
+          "fallback": {"action": "Advise caller to check with utility company for grid outage. Collect name and number. Promise callback within 1 hour."}
+        },
+        "non_emergency_routing_rules": "Provide business hours. Collect name and phone number. Next business day callback.",
+        "call_transfer_rules": {"business_hours_transfer_to": "704-555-0167", "voicemail_fallback": true},
+        "integration_constraints": ["Never create or modify jobs in Housecall Pro"],
+        "forbidden_phrases": [
+          "Do not quote prices",
+          "Do not say 'that sounds dangerous, you should call 911' — instead say 'please ensure you are in a safe location, then we will connect you with a technician immediately'",
+          "Do not confirm or deny permit pricing on calls — office handles all permit matters"
+        ],
+        "greeting": "Thanks for calling Volt Masters Electrical! How can we help power you up today?"
+      },
+      "v2_changes": {
+        "emergency_routing_rules.primary": {"old": "Linda Park 704-555-0167", "new": "Aaron Brooks 704-555-0182", "reason": "Aaron now handles nights better per owner request"},
+        "emergency_routing_rules.secondary": {"old": "Aaron Brooks 704-555-0182", "new": "Linda Park 704-555-0167", "reason": "Swapped order per owner request"},
+        "business_hours": {"saturday_added": {"start": "09:00", "end": "13:00"}, "reason": "New Saturday hours due to demand"},
+        "services_supported": {"added": ["solar panel electrical hookups", "backup battery system installation"], "reason": "New service offerings"},
+        "call_transfer_rules.vip_routing": {"added": true, "trigger": "Caller identifies as Greenfield Properties", "action": "Immediate transfer to Linda Park at 704-555-0167, bypass standard queue"},
+        "personnel_update": {"name": "Aaron Brooks", "title": {"old": "Lead technician", "new": "Co-owner"}},
+        "greeting": {"old": "Thanks for calling Volt Masters Electrical!...", "new": "Thanks for calling Volt Masters!...", "reason": "DBA changed — dropping 'Electrical' from name"}
+      }
+    },
+    {
+      "account_id": "ACC-005",
+      "v1": {
+        "company_name": "ShieldPest Control Group",
+        "business_hours": {
+          "days": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+          "weekday_and_saturday_hours": {"start": "07:00", "end": "19:00"},
+          "sunday": "scheduling calls only",
+          "timezone": "America/Chicago"
+        },
+        "office_address": "1800 Blalock Road, Houston, TX 77080",
+        "services_supported": ["general pest control","termite treatment","rodent control","mosquito treatment","bed bug treatment"],
+        "emergency_definition": [
+          "Active bee or wasp swarm inside occupied structure",
+          "Confirmed aggressive rodent infestation in food service facility",
+          "Bed bug discovery in hotel property under service contract"
+        ],
+        "emergency_routing_rules": {
+          "zone_based": true,
+          "note": "Agent must ask caller's address or zip code to determine zone",
+          "zones": {
+            "houston_north": {"tech": "Ray Castillo", "phone": "713-555-0213"},
+            "houston_south": {"tech": "Diane Webb", "phone": "713-555-0229"},
+            "houston_central": {"tech": "Marcus Hill", "phone": "713-555-0245"}
+          },
+          "timeout_seconds": 90,
+          "backup_line": "713-555-0200",
+          "backup_hours": "18:00-00:00",
+          "fallback": {"action": "Inform caller of 45-minute callback. SMS alert to Derek Owens at 713-555-0250."}
+        },
+        "non_emergency_routing_rules": "Provide business hours. Collect name, phone, service type interested in. Next business day follow-up.",
+        "call_transfer_rules": {
+          "business_hours_transfer_general": "713-555-0100",
+          "business_hours_transfer_commercial": "713-555-0108",
+          "routing_note": "If caller mentions commercial account, transfer to commercial line"
+        },
+        "integration_constraints": ["Never create or modify records in FieldRoutes"],
+        "forbidden_phrases": [
+          "Do not discuss chemical formulations or active ingredients — direct to product documentation or office for MSDS",
+          "Do not confirm or deny service coverage at specific address on call",
+          "Never say 'guarantee' or 'elimination guaranteed'"
+        ],
+        "greeting": "Thank you for calling ShieldPest Control Group. How can we protect your home or business today?"
+      },
+      "v2_changes": {
+        "business_hours": {"old": "Mon-Sat 7AM-7PM CT, Sunday scheduling only", "new": "Monday-Friday 7AM-7PM CT only. No weekend operations.", "reason": "Saturday volume insufficient, Sunday calls also dropped"},
+        "emergency_routing_rules.zones": {
+          "houston_north": {"old": "Ray Castillo 713-555-0213", "new": "Marcus Hill 713-555-0213", "reason": "Marcus moved to North zone"},
+          "houston_south_and_central": {"old": "Separate zones with Diane Webb and Marcus Hill", "new": "Combined zone: primary Ray Castillo 713-555-0229, fallback Elena Cruz 713-555-0261", "reason": "Zone restructuring, Elena Cruz added"}
+        },
+        "emergency_definition": {"added": "Rodent activity in hospital or elder care facility — route directly to Marcus Hill 713-555-0213 regardless of zone or time"},
+        "services_supported": {"added": ["wildlife removal"], "reason": "New license obtained"},
+        "integration_constraints": {"old": "FieldRoutes", "new": "ServiceTitan", "reason": "Platform migration completed last month"},
+        "weekend_calls": {"new_rule": "If caller contacts on weekend, inform that office is closed and answers calls Monday through Friday only"},
+        "greeting": {"new": "Thank you for calling ShieldPest Control Group, protecting homes and businesses across Houston. How can I help you today?"}
+      }
+    }
+  ]
+}
