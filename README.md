@@ -89,7 +89,7 @@ There are two workflows. They do different things. Run them in order.
 
 ### Pipeline 1 — Two-Stage Sequential Processing
 
-**What it does:** Takes one input file, runs it through Groq *twice* (first to extract a v1 memo, then to build an agent spec from that memo), and saves both outputs to disk.
+**What it does:** Takes all input file, runs it through Groq *twice* (first to extract a v1 memo, then to build an agent spec from that memo), and saves both outputs to disk.
 
 Think of it as: `raw transcript → structured memo → polished agent config`
 
@@ -125,7 +125,7 @@ Think of it as: `raw transcript → structured memo → polished agent config`
 After both pipelines run successfully on all 10 files, your `outputs/` folder will contain:
 
 - **10 account memo JSONs** — 5 at `v1` (from demo calls), 5 at `v2` (updated after onboarding)
-- **10 agent spec JSONs** — ready to paste into Retell or review manually
+- **5 agent spec JSONs** — ready to paste into Retell or review manually
 - One less headache
 
 ---
