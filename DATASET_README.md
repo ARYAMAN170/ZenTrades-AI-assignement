@@ -9,7 +9,7 @@ This dataset provides **5 demo call transcripts** (Pipeline A inputs) and **5 on
 
 ```
 clara_ai_dataset/
-├── transcripts/
+├── inputs/
 │   ├── demo/
 │   │   ├── demo_001_arctic_hvac.txt          → ACC-001
 │   │   ├── demo_002_riverstone_plumbing.txt  → ACC-002
@@ -22,7 +22,7 @@ clara_ai_dataset/
 │       ├── onboarding_003_fireguard.txt      → ACC-003
 │       ├── onboarding_004_volt_masters.txt   → ACC-004
 │       └── onboarding_005_shieldpest.txt     → ACC-005
-└── expected_outputs/
+└── outputs/    -> expected results will get autofilled ... outputs are already saved in this file you can delete them and rerun the workflow
     └── accounts/
         ├── ACC-001_memo_v1.json              → Full reference v1 memo
         ├── ACC-001_memo_v2.json              → Full reference v2 memo
